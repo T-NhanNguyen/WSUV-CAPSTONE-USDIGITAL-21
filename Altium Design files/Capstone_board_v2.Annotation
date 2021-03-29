@@ -1,0 +1,13 @@
+[DesignatorManager]
+
+[SheetNumberManager]
+SheetNumberOrder=Display Order
+SheetNumberMethod=Increasing
+DocumentName0=power_handler.SchDoc
+UniqueIDPath0=
+SheetNumber0=2
+DocumentName1=Atmega32u4.SchDoc
+UniqueIDPath1=
+SheetNumber1=1
+
+
