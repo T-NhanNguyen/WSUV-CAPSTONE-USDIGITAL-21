@@ -1,4 +1,4 @@
-// pwm encoder signal line is connected to digital pin 3
+// pwm encoder signal line is connected to digital pin 2
 
 #include "headers.h"
 

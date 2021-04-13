@@ -5,7 +5,7 @@
   #define CS    5
 #endif
 
-int analog_pin = A1;
+int analog_pin = A3;
 #define ARR_SIZE(x)(sizeof(x) / sizeof((x)[0]))
 
 // proper driver for the display
@@ -99,23 +99,31 @@ void setup() {
   init_pins();
   ls7366r_init(CS1);
   ls7366r_init(CS2);
-  u8g2.begin();   // calls init, clears, and disable power saving mode.
+//  u8g2.begin();   // calls init, clears, and disable power saving mode.
 
-  u8g2.firstPage();
-  u8g2_prepare();
-  home_screen();
-  u8g2.sendBuffer();
+//  u8g2.firstPage();
+//  u8g2_prepare();
+//  home_screen();
+//  u8g2.sendBuffer();
 
   // Allow some time todemo home screen
   delay(3000);    
 }
 
 void loop() {
-  u8g2.firstPage();
-  u8g2_prepare();
+//  u8g2.firstPage();
+//  u8g2_prepare();
+int value = map(analogRead(analog_pin), 0, 670, 0, 100);
+int value2 = ls7366r_read_cntr(CS1);
+int value3 = ls7366r_read_cntr(CS2);
+int value4 = pwm_reading;
 
-  delay(500);
+     Serial.print(value); Serial.print(' ');
+     Serial.print(value2); Serial.print(' ');
+     Serial.print(value3); Serial.print(' ');
+     Serial.println(value4);
+  //delay(50);
 
-  display_all_screen(ls7366r_read_cntr(CS1), ls7366r_read_cntr(CS1), analogRead(analog_pin), pwm_reading);
+//  display_all_screen(ls7366r_read_cntr(CS1), ls7366r_read_cntr(CS1), analogRead(analog_pin), pwm_reading);
   u8g2.sendBuffer();
 }

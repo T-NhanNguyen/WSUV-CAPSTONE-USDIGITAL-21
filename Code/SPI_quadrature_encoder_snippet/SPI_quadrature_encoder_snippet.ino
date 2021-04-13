@@ -213,5 +213,5 @@ void loop() {
   print_concatstr("READ_OTR 2:", test_read2);
 */
 
-  delay(1000);
+//  delay(1000);
 }

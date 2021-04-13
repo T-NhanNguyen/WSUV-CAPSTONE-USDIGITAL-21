@@ -11,7 +11,7 @@
   #define CS2 12
 #endif
 #ifndef PWM_PIN
-  #define pwm_signal 3
+  #define pwm_signal 2             //digital pin 11 did not work
 #endif
 
 extern volatile int pwm_reading;
