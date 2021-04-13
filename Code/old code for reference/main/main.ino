@@ -1,7 +1,9 @@
+#include <U8g2lib.h>
+#include <U8x8lib.h>
+
 #include <SPI.h>
 #include <Wire.h>
 #include <Arduino.h>
-#include <U8g2lib.h>
 #ifndef LCDPINS
   #define REGSEL  5
   #define CS    7
