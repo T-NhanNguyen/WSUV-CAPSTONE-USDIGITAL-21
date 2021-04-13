@@ -3,8 +3,8 @@
 #include <Arduino.h>
 #include <U8g2lib.h>
 #ifndef LCDPINS
-  #define REGSEL  5
-  #define CS    7
+  #define REGSEL  4
+  #define CS    5
 #endif
 #define ARR_SIZE(x)(sizeof(x) / sizeof((x)[0]))
 
@@ -65,26 +65,17 @@ void setup() {
   u8g2.sendBuffer();
   delay(3000);    // demo home screen
   old_state = new_state = ((digitalRead(logic_out[1]) << 1) | digitalRead(logic_out[2]));
-  
-  while(1) {
-//    u8g2.firstPage();
-//    u8g2_prepare();
-    for(int i = 0; i < 4; i++) {
-      button_state[i] = digitalRead(button_pin[i]);
-    }
-    for(int i = 0; i < 4; i++) {
-      if(!button_state[i]) {
-        Serial.print("button "); Serial.println(++i);
-      }
-    }
-    analog_ecoder(&counter);
-    delay(25);
-    
-//    delay(500);
-    
-//    display_all_screen(counter, -1, -1, -1);
-//    u8g2.sendBuffer();
-  }
+
+}
+
+void loop() {
+  u8g2.firstPage();
+  u8g2_prepare();
+
+  delay(500);
+
+  display_all_screen(-1, -1, -1, -1);
+  u8g2.sendBuffer();
 }
 
 void init_pins() {
