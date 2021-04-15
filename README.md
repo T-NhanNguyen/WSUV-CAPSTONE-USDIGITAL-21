@@ -1,6 +1,6 @@
 # WSUV-CAPSTONE-USDIGITAL-21
  Senior capstone project for WSUV class of 2021
-
+ 
 Critical problems with the current PCB design:
 	There is an accidental short between RO pin of LTC485 and one of the button that I've overlooked. This means that one button would just be unusable
 
