@@ -72,34 +72,42 @@ SCK frequency = fosc/4
 #define LOAD_CNTR 0xE0
 #define LOAD_OTR 0xE4
 
+long int ls7366r_read_cntr(uint8_t device);
+
 uint8_t ls7366r_recieve(uint8_t device, uint8_t op_code) {
   uint8_t data = 0;
 
   // Serial.print("opcode for read: "); Serial.println(op_code);
+// *** slowing down the SPI clock to within capabilities of 7366 device (< 4MHz)
+  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0)); 
+// *** switched enable/disable signal activation to within the SPI activation area, per SPI library recommendation
   digitalWrite(device, LOW);
-  SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0)); 
 
 
   SPI.transfer(op_code);          // send out opcode
   data |= SPI.transfer(0);
 
-  SPI.endTransaction();
   digitalWrite(device, HIGH);
+  SPI.endTransaction();
   return data;
 }
 
 void ls7366r_write(uint8_t device, uint8_t op_code, uint8_t data) {
   
+// *** SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0));
+// *** slowing down the SPI clock to within capabilities of 7366 device (< 4MHz)
+  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
+
   // Serial.print("opcode and data for write: "); Serial.print(op_code);
   // Serial.print(" "); Serial.println(data);
+// *** switched enable/disable signal activation to within the SPI activation area, per SPI library recommendation
   digitalWrite(device, LOW);
-  SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0)); 
 
   SPI.transfer(op_code);            // required opcode
   SPI.transfer(data);
 
-  SPI.endTransaction();
   digitalWrite(device, HIGH);
+  SPI.endTransaction();
 }
 
 // "device" param corresponds to the CS pin assigned to the following device
@@ -111,8 +119,8 @@ void ls7366r_init(uint8_t device) {
   // NOTE: LS7366R opperates faster than arduino
   SPI.begin();
 
-  uint32_t mdr1_preset  = (IDX_FLAG|CMP_FLAG|BYTE_2|EN_CNTR);
-  uint32_t mdr0_preset  = (FILTER_2|SYNCH_INDX|INDX_LOADC|FREE_RUN|QUADRX4);
+  uint32_t mdr1_preset  = (BYTE_2|EN_CNTR);
+  uint32_t mdr0_preset  = (FILTER_2|DISABLE_INDX|FREE_RUN|QUADRX4);
   
   // init encoder 1
   ls7366r_write(device, WRITE_MDR1, mdr1_preset);   // reg involving counters
@@ -122,17 +130,12 @@ void ls7366r_init(uint8_t device) {
 
   // verifying the decoder by comparing reg values
   if( (ls7366r_recieve(device, READ_MDR1) != mdr1_preset) ||
-      (ls7366r_recieve(device, READ_MDR0) != mdr0_preset) ||
-      (ls7366r_read_cntr(device)          != 0)             ) {
-    Serial.print(F("Failed validity check at:"));
-    Serial.println(__LINE__);
-    while(1) {
-      digitalWrite(A1, HIGH);
-      delay(500);
-      digitalWrite(A1, LOW);
-      delay(500);
+      (ls7366r_recieve(device, READ_MDR0) != mdr0_preset)  )
+    {
+        Serial.print(F("Failed validity check"));
+        digitalWrite(A1, HIGH);
+        while(1);
     }
-  }
 
   digitalWrite(device, HIGH); // cs default high
 }
@@ -157,19 +160,22 @@ long int ls7366r_read_cntr(uint8_t device) {
       break;
   }
 
+  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0)); 
   digitalWrite(device, LOW);
-  SPI.beginTransaction(SPISettings(16000000, MSBFIRST, SPI_MODE0)); 
+  
+  SPI.transfer(READ_CNTR);          // send out opcode
   
   // perform bit shifts while appending the next byte
   for(int i = 0; i < (data_length - 1); i++) {
     data |= SPI.transfer(0);
-    data <<= 4;
+// *** changed bit shift from 4 to 8
+    data <<= 8;
   }
   data |= SPI.transfer(0);
 
-  SPI.endTransaction();
   digitalWrite(device, HIGH);
-
+  SPI.endTransaction();
+  
   return data;
 }
 
@@ -182,6 +188,7 @@ void print_concatstr(char *sentence, int value) {
 
 void setup() {
   pinMode(A1, OUTPUT);  // debug_led
+  digitalWrite(A1, LOW);
   Serial.begin(9600);   //open serial port at 9600 bps
   // delay(2000);
   ls7366r_init(cs_1);
@@ -191,9 +198,10 @@ void setup() {
 void loop() {
   test_read1 = ls7366r_read_cntr(cs_1);
   test_read2 = ls7366r_read_cntr(cs_2);
-  print_concatstr("Read CNTR 1:", test_read1);
-  print_concatstr("Read CNTR 2:", test_read2);
+  print_concatstr("Read CNTR 1:", int(test_read1));
+  print_concatstr("Read CNTR 2:", int(test_read2));
 
+/*
   test_read1 = ls7366r_recieve(cs_1 ,READ_STR);
   test_read2 = ls7366r_recieve(cs_2 ,READ_STR);
   print_concatstr("READ_STR 1:", test_read1);
@@ -203,7 +211,7 @@ void loop() {
   test_read2 = ls7366r_recieve(cs_2 ,READ_OTR);
   print_concatstr("READ_OTR 1:", test_read1);
   print_concatstr("READ_OTR 2:", test_read2);
-  delay(1000);
+*/
+
+//  delay(1000);
 }
-
-

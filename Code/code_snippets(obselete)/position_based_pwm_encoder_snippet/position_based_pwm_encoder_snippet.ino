@@ -14,7 +14,7 @@ void setup() {
 
 void loop() {
   Serial.println(x);
-  delay(200);
+  delay(0);
 }
 
 void rising_edge() {
