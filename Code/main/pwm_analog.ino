@@ -1,14 +1,10 @@
-// pwm encoder signal line is connected to digital pin 2
-
-#include "headers.h"
-
 static volatile unsigned long ton = 0;   // set initial times on to 0
 static volatile unsigned long toff = 0;  // set inital off time to 0 
 static volatile unsigned long time_stamp;  // time stamp
 static volatile int dty_ccl = 0;     // set initial duty cycle to 0
 static volatile int reading = 0;
 
-volatile int pwm_reading;       // requires a global variable as this is passed between isr and main
+volatile long pwm_reading;       // requires a global variable as this is passed between isr and main
 
 // no parameter because this requires a global variable to be passed between isr
 void setup_pwm_decoder() {

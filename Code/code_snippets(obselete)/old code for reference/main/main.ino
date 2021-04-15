@@ -2,11 +2,13 @@
 #include <Wire.h>
 #include <Arduino.h>
 #include <U8g2lib.h>
+
+#define ARR_SIZE(x)(sizeof(x) / sizeof((x)[0]))
+
 #ifndef LCDPINS
   #define REGSEL  4
   #define CS    5
 #endif
-#define ARR_SIZE(x)(sizeof(x) / sizeof((x)[0]))
 
 U8G2_ST7565_NHD_C12864_F_4W_SW_SPI u8g2(U8G2_R0, SCK , MOSI, CS, REGSEL, U8X8_PIN_NONE);
 

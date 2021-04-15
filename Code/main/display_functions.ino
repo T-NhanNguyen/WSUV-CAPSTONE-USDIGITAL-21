@@ -1,36 +1,7 @@
-#include "headers.h"
-
-#ifndef LCDPINS
-  #define REGSEL  4
-  #define CS    5
-#endif
-
-int analog_pin = A3;
-#define ARR_SIZE(x)(sizeof(x) / sizeof((x)[0]))
-
-// proper driver for the display
-U8G2_ST7565_NHD_C12864_F_4W_SW_SPI u8g2(U8G2_R0, SCK , MOSI, CS, REGSEL, U8X8_PIN_NONE);
-
-int largest(int arr[], int n) {
-  int max = 0;
-  for (int i = 0; i < n; i++) {
-    if (arr[i] > max) 
-      max = arr[i]; 
-  }
-  return max;
+void display_init() {
+  digitalWrite(CS, HIGH);
+  u8g2.begin();
 }
-
-void init_pins() {
-  Serial.begin(115200);
-  pinMode(REGSEL, OUTPUT);
-  pinMode(CS, OUTPUT);
-
-  setup_pwm_decoder();
-  setup_analog_decoder(analog_pin);
-  // pinMode(A1, OUTPUT);  // debug_led
-  // digitalWrite(A1, LOW);
-}
-
 void u8g2_prepare(void) {
 
   u8g2.setFont(u8g2_font_open_iconic_all_2x_t);    // 18 pixel font type. For value labeling
@@ -95,35 +66,11 @@ void display_all_screen(int dual_line_value, int single_line_value, int analog_v
   }
 }
 
-void setup() {
-  init_pins();
-  ls7366r_init(CS1);
-  ls7366r_init(CS2);
-//  u8g2.begin();   // calls init, clears, and disable power saving mode.
-
-//  u8g2.firstPage();
-//  u8g2_prepare();
-//  home_screen();
-//  u8g2.sendBuffer();
-
-  // Allow some time todemo home screen
-  delay(3000);    
-}
-
-void loop() {
-//  u8g2.firstPage();
-//  u8g2_prepare();
-int value = map(analogRead(analog_pin), 0, 670, 0, 100);
-int value2 = ls7366r_read_cntr(CS1);
-int value3 = ls7366r_read_cntr(CS2);
-int value4 = pwm_reading;
-
-     Serial.print(value); Serial.print(' ');
-     Serial.print(value2); Serial.print(' ');
-     Serial.print(value3); Serial.print(' ');
-     Serial.println(value4);
-  //delay(50);
-
-//  display_all_screen(ls7366r_read_cntr(CS1), ls7366r_read_cntr(CS1), analogRead(analog_pin), pwm_reading);
-  u8g2.sendBuffer();
+int largest(int arr[], int n) {
+  int max = 0;
+  for (int i = 0; i < n; i++) {
+    if (arr[i] > max) 
+      max = arr[i]; 
+  }
+  return max;
 }

@@ -1,5 +1,4 @@
-#include "headers.h"
-
+#include "decoder_macros.h"
 /*
 SPCR configuration
 CPOL = 0, CPHA = 0, Mode0
@@ -39,9 +38,6 @@ void ls7366r_init(uint8_t device) {
   pinMode(device, OUTPUT);
   
   digitalWrite(device, HIGH); // cs default high
-  
-  // NOTE: LS7366R opperates faster than arduino
-  SPI.begin();
 
   uint32_t mdr1_preset  = (BYTE_2|EN_CNTR);
   uint32_t mdr0_preset  = (FILTER_2|DISABLE_INDX|FREE_RUN|QUADRX4);

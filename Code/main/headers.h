@@ -1,5 +1,4 @@
 #include <SPI.h>
-#include <Wire.h>
 #include <U8g2lib.h>
 #include <util/delay.h>            // Delay functions
 #include <SoftwareSerial.h>        // Serial Library
@@ -13,7 +12,6 @@
 #ifndef PWM_PIN
   #define pwm_signal 2             //digital pin 11 did not work
 #endif
-
 extern volatile int pwm_reading;
 
 // quadrature decoder
@@ -31,3 +29,11 @@ void falling_edge();
 
 // analog decoder
 void setup_analog_decoder(int pin);
+
+
+// display
+int largest(int arr[], int n);
+void u8g2_prepare(void);
+void home_screen();
+void display_all_screen(int dual_line_value, int single_line_value, int analog_value, int pwm_value);
+void test_screen(void);
