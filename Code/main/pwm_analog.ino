@@ -28,7 +28,5 @@ void rising_edge() {
 void falling_edge() {
   toff = micros();      // reads time when falling edge is triggered
   pwm_reading = (toff - ton);
-  if (pwm_reading > 1024)       // clip in case too large
-    pwm_reading = 1024;
   attachInterrupt(digitalPinToInterrupt(pwm_signal), rising_edge, RISING);
 }
