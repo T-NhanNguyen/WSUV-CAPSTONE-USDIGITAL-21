@@ -43,11 +43,26 @@ void falling_edge();
 // analog decoder
 void setup_analog_decoder(int pin);
 
+void goto_to_homescreen() {
+  u8g2.firstPage();
+  u8g2_prepare();
+  home_screen();
+  u8g2.sendBuffer();
+  while(1){
+    if(!digitalRead(10) || !digitalRead(9)) {
+      delay(500);
+      break;
+    }
+  }
+}
+
 void setup() {
   Serial.begin(9600);
   // NOTE: LS7366R opperates faster than arduino
   SPI.begin();
-  
+
+  pinMode(10, INPUT);
+  pinMode(9, INPUT);
   
   setup_pwm_decoder();
   setup_analog_decoder(analog_pin);
@@ -57,6 +72,8 @@ void setup() {
 
   SPI.end();        // this interfere with the display's api somehow?...
   display_init();
+  
+  goto_to_homescreen();
 }
 
 void loop() {
@@ -72,4 +89,7 @@ void loop() {
   // display_all_screen(-1, -1, -1, -1);
   display_all_screen(dual_line, sing_line, analog_encoder, pwm_encoder);
   u8g2.sendBuffer();
+
+  if(!digitalRead(10))
+    goto_to_homescreen();
 }
